@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mad/screens/main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -36,7 +37,10 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Container(
         width: MediaQuery.of(context).size.width,
           height: 40,
-          child: ElevatedButton(onPressed: (){}, child: Text("Get Start"))
+          child: ElevatedButton(onPressed: (){
+            final route = MaterialPageRoute(builder: (BuildContext context) => MainScreen());
+            Navigator.pushReplacement(context, route);
+          }, child: Text("Get Start"))
       ),
     );
   }
