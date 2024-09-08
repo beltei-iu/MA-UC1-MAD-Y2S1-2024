@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mad/screens/article_screen.dart';
+import 'package:mad/screens/product_screen.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
