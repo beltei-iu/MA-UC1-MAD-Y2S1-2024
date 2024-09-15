@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:mad/main.dart';
+import 'package:mad/model/data_route_arguments.dart';
 
 class NewsScreen extends StatefulWidget {
 
-  String title;
-
-  NewsScreen({super.key, required this.title});
+  NewsScreen({super.key});
 
   @override
   State<NewsScreen> createState() => _NewsScreenState();
 }
 
 class _NewsScreenState extends State<NewsScreen> {
+
   @override
   Widget build(BuildContext context) {
 
-    // print("Data in New route :  ${ModalRoute.of(context)?.settings.arguments}");
-    //
-    // final title = ModalRoute.of(context)?.settings.arguments;
+    final args = ModalRoute.of(context)!.settings.arguments as DataRouteArguments;
+    print("Data in New route :  ${args.title}");
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.title}"),
+        title: Text("${args.title}"),
       ),
       body: Center(
         child: ElevatedButton(onPressed: (){

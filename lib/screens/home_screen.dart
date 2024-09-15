@@ -1,12 +1,15 @@
 
-import 'dart:async';
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:mad/model/book.dart';
+import 'package:mad/model/data_route_arguments.dart';
 import 'package:mad/routes.dart';
-import 'package:mad/screens/news_screen.dart';
+import 'package:badges/badges.dart' as badges;
+
+import '../services/book_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,6 +27,27 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    //insertBook();
+    //readBooks();
+  }
+
+  void insertBook() async{
+    final book = Book(1,"ABC","Mr. Jor");
+    BookService().insertBook(book);
+    final book2 = Book(2,"XYZ","Mr. Joy");
+    BookService().insertBook(book2);
+  }
+
+  void readBooks(){
+    BookService().getBookList().then((books){
+      print(books.length);
+      books.forEach((e){
+        print(e.title);
+        print(e.author);
+      });
+    }).catchError((error){
+      print(error);
+    });
   }
 
 
@@ -79,25 +103,43 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeScreen = Scaffold(
       appBar: AppBar(
         // title: Image.asset("assets/images/BELTEI_international_university_logo.png"),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset("assets/images/beltei_iu_logo.png",
-              height: 50,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("សាកលវិទ្យាល័យ ប៊ែលធី អន្តរជាតិ"),
-                Text("BELTEI International University", style: TextStyle(fontSize: 14),)
-              ],
-            ),
-            SizedBox(height: 2,)
-          ],
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 16.0, top: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/beltei_iu_logo.png",
+                width: 40,),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("សាកលវិទ្យាល័យ ប៊ែលធី អន្តរជាតិ", style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold),),
+                    Text("BELTEI International University", style: TextStyle(fontSize: 16),)
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.notifications),
+            padding: const EdgeInsets.only(left: 8.0),
+            child: badges.Badge(
+              showBadge: true,
+              position: badges.BadgePosition.topEnd(top: 0, end: 10),
+              child: IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () {},
+              ),
+              badgeStyle: badges.BadgeStyle(
+                badgeColor: Colors.red
+              ),
+              badgeContent: Text("10",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           )
         ],
       ),
@@ -204,6 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _cardMenu(String name,{Icon? icon , int widthSize = 4}){
     return Container(
       width: MediaQuery.of(context).size.width / widthSize ,
+      height: 80,
       child: Card(
         elevation: 4,
         child: Center(
@@ -219,37 +262,44 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _menuWidget {
+
+    final menuTitleList1 = ["ព័ត៏មាន","បំប៉នភាសារ","បំប៉នគរុកោសល្យ","កម្មវិធីសិក្សារ"];
+    final cardList1 = menuTitleList1.map((item) {
+      return GestureDetector(
+        child: _cardMenu(item),
+        onTap: (){
+          navigateToNewsScreen(item);
+        },
+      );
+    }).toList();
     final row1 = Row(
-      children: [
-        GestureDetector(
-          child: _cardMenu(newsTitle),
-          onTap: (){
-            //RouteGenerator.key.currentState?.pushNamed(RouteGenerator.newsScreen, arguments: "ព័ត៏មាន");
-            navigateToNewsScreen();
-
-          },
-        ),
-        _cardMenu("ព័ត៏មាន"),
-        _cardMenu("ព័ត៏មាន"),
-        _cardMenu("ព័ត៏មាន"),
-      ],
+      children: cardList1,
     );
 
+    final menuTitleList2 = ["ទីតាំង","បណ្ណាល័យ","ប្រតិបត្តិការ"];
+    final cardList2 = menuTitleList2.map((item) {
+      return GestureDetector(
+        child: _cardMenu(item , widthSize: item == "បណ្ណាល័យ" ? 2 : 4),
+        onTap: (){
+          navigateToNewsScreen(item);
+        },
+      );
+    }).toList();
     final row2 = Row(
-      children: [
-        _cardMenu("ព័ត៏មាន"),
-        _cardMenu("ព័ត៏មាន", widthSize: 2),
-        _cardMenu("ព័ត៏មាន"),
-      ],
+      children: cardList2,
     );
 
+    final menuTitleList3 = ["អគារស្នាក់នៅ","គេហទំព័រ","បណ្តាញសង្គម","ឧកាសការងារ"];
+    final cardList3 = menuTitleList3.map((item) {
+      return GestureDetector(
+        child: _cardMenu(item),
+        onTap: (){
+          navigateToNewsScreen(item);
+        },
+      );
+    }).toList();
     final row3 = Row(
-      children: [
-        _cardMenu("ព័ត៏មាន"),
-        _cardMenu("ព័ត៏មាន"),
-        _cardMenu("ព័ត៏មាន"),
-        _cardMenu("ព័ត៏មាន"),
-      ],
+      children: cardList3,
     );
 
     return Padding(
@@ -264,12 +314,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void navigateToNewsScreen() async {
-    final route = MaterialPageRoute(builder: (BuildContext context) => NewsScreen(title: "ព័ត៏មាន",));
-    final data = await Navigator.push(context, route);
+  void navigateToNewsScreen(String item) async {
+
+    // Method 1
+    // final route = MaterialPageRoute(builder: (BuildContext context) => NewsScreen(newsTitle: "ព័ត៏មាន",));
+    // final data = await Navigator.push(context, route);
+
+    // Method 2
+    DataRouteArguments dataRouteArguments = DataRouteArguments(item);
+    final data = await Navigator.pushNamed(context, RouteGenerator.newsScreen, arguments: dataRouteArguments) as String ?? "";
     print("Data from NewsScreen using method POP: $data");
     setState(() {
-      newsTitle = data!;
+      newsTitle = data;
     });
   }
 }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mad/db/db_helper.dart';
 import 'package:mad/routes.dart';
 import 'package:mad/screens/article_screen.dart';
 import 'package:mad/screens/main_screen.dart';
 import 'package:mad/screens/product_screen.dart';
 import 'screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DbHelper.instance.database;
   runApp(App());
 }
 
