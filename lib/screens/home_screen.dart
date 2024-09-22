@@ -8,9 +8,11 @@ import 'package:khmer_fonts/khmer_fonts.dart';
 import 'package:mad/model/book.dart';
 import 'package:mad/model/data_route_arguments.dart';
 import 'package:mad/model/menu.dart';
+import 'package:mad/provider/language_provider.dart';
 import 'package:mad/routes.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:mad/services/menu_service.dart';
+import 'package:provider/provider.dart';
 
 import '../services/book_service.dart';
 
@@ -220,8 +222,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          khmerFlag,
-          englishFlag
+          GestureDetector(
+              onTap: (){
+                final provider = Provider.of<LanguageProvider>(context,listen: false);
+                provider.changeLocale(Locale("km"));
+              },
+              child: khmerFlag),
+          GestureDetector(
+              onTap: (){
+                final provider = Provider.of<LanguageProvider>(context, listen: false);
+                provider.changeLocale(Locale("en"));
+              },
+              child: englishFlag)
         ],
       ),
     );

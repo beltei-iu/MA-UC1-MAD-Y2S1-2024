@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mad/localize/app_localization.dart';
+import 'package:mad/localize/app_localize_key.dart';
 import 'package:mad/routes.dart';
-import 'package:mad/screens/main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -42,7 +43,10 @@ class _SplashScreenState extends State<SplashScreen> {
             //final route = MaterialPageRoute(builder: (BuildContext context) => MainScreen());
             //Navigator.of(context).pushReplacementNamed(RouteGenerator.mainScreen);
               RouteGenerator.key.currentState?.pushReplacementNamed(RouteGenerator.mainScreen);
-            }, child: Text("Get Start"))
+            }, child:
+          Text(AppLocalization.of(context)!.translate(AppLocalizeKey.getStart)
+          )
+          )
       ),
     );
   }

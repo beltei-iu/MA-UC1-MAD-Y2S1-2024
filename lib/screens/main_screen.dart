@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:mad/localize/app_localization.dart';
+import 'package:mad/localize/app_localize_key.dart';
 import 'package:mad/main.dart';
 import 'package:mad/screens/class_screen.dart';
 import 'package:mad/screens/home_screen.dart';
@@ -24,9 +26,9 @@ class _State extends State<MainScreen> {
   Widget build(BuildContext context) {
 
     List<BottomNavigationBarItem> myBottomNavigationBarItemList = [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-      BottomNavigationBarItem(icon: Icon(Icons.class_rounded), label: "Class"),
-      BottomNavigationBarItem(icon: Icon(Icons.more_vert), label: "More"),
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: AppLocalization.of(context)!.translate(AppLocalizeKey.home)),
+      BottomNavigationBarItem(icon: Icon(Icons.class_rounded), label: AppLocalization.of(context)!.translate(AppLocalizeKey.classroom)),
+      BottomNavigationBarItem(icon: Icon(Icons.more_vert), label: AppLocalization.of(context)!.translate(AppLocalizeKey.more)),
     ];
 
     final mainScreen = Scaffold(

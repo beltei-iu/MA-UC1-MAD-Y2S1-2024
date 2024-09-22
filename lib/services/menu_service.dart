@@ -6,7 +6,7 @@ import 'package:mad/model/menu.dart';
 class MenuService {
 
   Future<List<Menu>> getMenu() async {
-    final url = "http://ec2-47-129-48-80.ap-southeast-1.compute.amazonaws.com/menu.json";
+    final url = "http://ec2-18-141-176-124.ap-southeast-1.compute.amazonaws.com/menu.json";
     try{
       final resp = await http.get(Uri.parse(url));
       if(resp.statusCode == 200){

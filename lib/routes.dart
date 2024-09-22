@@ -29,22 +29,11 @@ class RouteGenerator {
 
     switch(settings.name){
       case splashScreen:
-
-        final route = MaterialPageRoute(
-            settings: settings,
-            builder: (BuildContext context) => SplashScreen());
-        return route;
+        return _createRoute(SplashScreen(), settings);
       case mainScreen:
-        final route = MaterialPageRoute(
-            settings: settings,
-            builder: (BuildContext context) => MainScreen());
-        return route;
+        return _createRoute(MainScreen(), settings);
       case newsScreen:
-        final route = MaterialPageRoute(
-            settings: settings,
-            builder: (BuildContext context) =>  NewsScreen());
-        return route;
-
+        return _createRoute(NewsScreen(), settings);
       case loginScreen:
         return _createRoute(LoginScreen(), settings);
       case registerScreen:
