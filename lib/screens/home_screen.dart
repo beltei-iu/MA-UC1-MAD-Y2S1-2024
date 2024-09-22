@@ -1,13 +1,16 @@
 
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:khmer_fonts/khmer_fonts.dart';
 import 'package:mad/model/book.dart';
 import 'package:mad/model/data_route_arguments.dart';
+import 'package:mad/model/menu.dart';
 import 'package:mad/routes.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:mad/services/menu_service.dart';
 
 import '../services/book_service.dart';
 
@@ -24,11 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int _current = 0;
   final CarouselSliderController _controller = CarouselSliderController();
 
+  final menuService = MenuService();
+
   @override
   void initState() {
     super.initState();
     //insertBook();
     //readBooks();
+    menuService.getMenu();
   }
 
   void insertBook() async{
@@ -89,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text('Welcome to BELTEI Internation School',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16.0,
+                        fontSize: 15.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -108,8 +114,11 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/beltei_iu_logo.png",
-                width: 40,),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Image.asset("assets/images/beltei_iu_logo.png",
+                  width: 40,),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Column(
@@ -125,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: const EdgeInsets.only(left: 8.0, top: 8.0),
             child: badges.Badge(
               showBadge: true,
               position: badges.BadgePosition.topEnd(top: 0, end: 10),
@@ -246,14 +255,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _cardMenu(String name,{Icon? icon , int widthSize = 4}){
     return Container(
       width: MediaQuery.of(context).size.width / widthSize ,
-      height: 80,
+      height: 100,
       child: Card(
         elevation: 4,
         child: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.newspaper),
-                Text(name)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(name,
+                    style: TextStyle(
+                        fontFamily: KhmerFonts.angkor,
+                        fontSize: 12
+                    ),),
+                )
               ],
             )
         ),
@@ -263,7 +280,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _menuWidget {
 
-    final menuTitleList1 = ["ព័ត៏មាន","បំប៉នភាសារ","បំប៉នគរុកោសល្យ","កម្មវិធីសិក្សារ"];
+    final menuService = MenuService();
+
+
+    final menuTitleList1 = ["ព័ត៏មាន","បំប៉នភាសារ","គរុកោសល្យ","កម្មវិធីសិក្សារ"];
+
+
+
     final cardList1 = menuTitleList1.map((item) {
       return GestureDetector(
         child: _cardMenu(item),
@@ -302,16 +325,84 @@ class _HomeScreenState extends State<HomeScreen> {
       children: cardList3,
     );
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: Column(
-        children: [
-          row1,
-          row2,
-          row3
-        ],
-      ),
-    );
+    // return Padding(
+    //   padding: const EdgeInsets.only(top: 16),
+    //   child: Column(
+    //     children: [
+    //       row1,
+    //       row2,
+    //       row3
+    //     ],
+    //   ),
+    // );
+
+
+    return FutureBuilder(
+        future: menuService.getMenu(),
+        builder: (BuildContext context, AsyncSnapshot<List<Menu>> asyncSnapshot){
+          if(asyncSnapshot.connectionState == ConnectionState.done){
+            if(asyncSnapshot.hasError){
+              return Center(
+                  child: Text("${asyncSnapshot.error}")
+              );
+            }
+            if(!asyncSnapshot.hasData){
+              return Center(
+                  child: Text("No Data")
+              );
+            }
+
+            List<Menu> menuList = asyncSnapshot.data as List<Menu>;
+            List<Widget> cardList1 = [];
+            List<Widget> cardList2 = [];
+            List<Widget> cardList3 = [];
+
+            int index = 1;
+            menuList.forEach((menu) {
+              String name = menu.nameKh!;
+              print("menu : $name");
+              int lengthOfText = name.length;
+              print("length : $lengthOfText");
+
+              if(lengthOfText > 12){
+                final titleList =  name.substring(0, 15);
+                print("titleList : $titleList");
+                name = "$name..";
+              }
+
+              if(index < 5){
+                cardList1.add(_cardMenu(name));
+              }else if(index >= 5 && index < 8){
+                cardList2.add(_cardMenu(name, widthSize: menu.id! == 6 ? 2 : 4));
+              }else{
+                cardList3.add(_cardMenu(name));
+              }
+              index += 1;
+            });
+            final row1 = Row(
+              children: cardList1,
+            );
+            final row2 = Row(
+              children: cardList2,
+            );
+            final row3 = Row(
+              children: cardList3,
+            );
+
+            return Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Column(
+                children: [
+                  row1,row2,row3
+                ],
+              ),
+            );
+          }else{
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 
   void navigateToNewsScreen(String item) async {
@@ -328,4 +419,22 @@ class _HomeScreenState extends State<HomeScreen> {
       newsTitle = data;
     });
   }
+
+  void loadDataFromApi() async{
+    String url = "http://ec2-47-129-48-80.ap-southeast-1.compute.amazonaws.com/menu.json";
+    try{
+      final response = await http.get(Uri.parse(url));
+      if(response.statusCode == 200){
+        final resBody = response.body;
+        print(resBody);
+      }else{
+        throw("Error : error code ${response.statusCode}");
+      }
+    }catch(err){
+      print("Error : $err");
+      throw("Error : $err");
+    }
+  }
+
+
 }
